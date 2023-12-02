@@ -1,0 +1,63 @@
+=> SCRIPTS <=
+
+Router 1 (R1)
+
+Router(config)#int fa0/0
+Router(config-if)#ip address 192.168.0.1 255.255.255.0
+Router(config-if)#no shutdown 
+Router(config-if)#int se0/1/0
+Router(config-if)#ip address 192.168.1.1 255.255.255.0
+Router(config-if)#no shutdown
+Router(config-if)#do wr
+Router(config-if)#exit
+Router(config)#router rip
+Router(config-router)#network 192.168.0.0
+Router(config-router)#network 192.168.1.0
+Router(config-router)#do wr
+
+Router 2 (R2)
+
+Router(config)#int fa0/0
+Router(config-if)#ip address 192.168.3.1 255.255.255.0
+Router(config-if)#no shutdown 
+Router(config-if)#int se0/0/0
+Router(config-if)#ip address 192.168.1.2 255.255.255.0
+Router(config-if)#no shutdown
+Router(config-if)#int se0/0/1
+Router(config-if)#ip address 192.168.2.1 255.255.255.0
+Router(config-if)#no shutdown
+Router(config-if)#exit
+Router(config)#router rip
+Router(config-router)#network 192.168.1.0
+Router(config-router)#network 192.168.2.0
+Router(config-router)#network 192.168.3.0
+Router(config-router)#do wr
+Router(config-router)#exit
+Router(config)#no access-list 1
+Router(config)#access-list 1 deny 192.168.4.0 0.0.0.255
+Router(config)#access-list 1 deny host 192.168.0.2 
+Router(config)#access-list 1 deny host 192.168.0.3 
+Router(config)#access-list 1 permit any 
+Router(config)#int fa0/0
+Router(config-if)#ip access-group 1 out
+Router(config-if)#do wr
+
+Router 3 (R3)
+
+Router(config)#int fa0/0
+Router(config-if)#ip address 192.168.4.1 255.255.255.0
+Router(config-if)#no shutdown
+Router(config-if)#int se0/0/0
+Router(config-if)#ip address 192.168.2.2 255.255.255.0
+Router(config-if)#no shutdown
+Router(config-if)#exit
+Router(config)#router rip
+Router(config-router)#network 192.168.2.0
+Router(config-router)#network 192.168.4.0
+Router(config-router)#do wr
+Router(config-router)#exit
+Router(config)#no access-list 1
+Router(config)#access-list 1 deny 192.168.3.0 0.0.0.255
+Router(config)#access-list 1 deny host 192.168.0.4
+Router(config)#access-list 1 deny host 192.168.0.5
+Router(config)#access-list 1 permit any
